@@ -7,3 +7,6 @@
 [submodule "background-model-vivado"]
 	path = background-model-vivado
 	url = git@github.com:wgml/magister-background-model-vivado.git
+[submodule "ip-repo"]
+	path = ip-repo
+	url = git@github.com:wgml/magister-ip-repo.git
