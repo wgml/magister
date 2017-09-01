@@ -1,0 +1,38 @@
+/dts-v1/;
+/include/ "system-conf.dtsi"
+/ {
+};
+
+&gem0 {
+	phy-handle = <&phy0>;
+	ps7_ethernet_0_mdio: mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		phy0: phy@0 {
+			compatible = "marvell,88e1510";
+			device_type = "ethernet-phy";
+			reg = <0>;
+		} ;
+	} ;
+};
+
+&flash0 {
+	compatible = "spansion,s25fl256s1";
+};
+
+/{
+	usb_phy0: usb_phy@0 {
+		compatible = "ulpi-phy";
+		#phy-cells = <0>;
+		reg = <0xe0002000 0x1000>;
+		view-port = <0x0170>;
+		drv-vbus;
+	};
+};
+
+&usb0 {
+	dr_mode = "otg";
+	usb-phy = <&usb_phy0>;
+} ;
+
+/include/ "openamp-overlay.dtsi"
