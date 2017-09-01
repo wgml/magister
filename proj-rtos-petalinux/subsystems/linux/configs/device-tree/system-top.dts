@@ -1,0 +1,6 @@
+/dts-v1/;
+/include/ "system-conf.dtsi"
+/include/ "openamp-overlay.dtsi"
+/ {
+};
+

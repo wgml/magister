@@ -1,0 +1,12 @@
+/ {
+	amba {
+		remoteproc0: remoteproc@0 {
+			compatible = "xlnx,zynq_remoteproc";
+			reg = < 0x00000000 0x10000000 >;
+			firmware = "firmware";
+			vring0 = <15>;
+			vring1 = <14>;
+		};
+	};
+};
+
