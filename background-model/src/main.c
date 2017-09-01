@@ -144,8 +144,6 @@ int main(int argc, char * argv[])
 		usleep(1000000);
 	}
 
-	//cleanup(video_transmit);
-
 	if (config.algo_mode && config.server_run) {
 		server_stop(server_ctx);
 		free(server_ctx);

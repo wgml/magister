@@ -1,6 +1,8 @@
 #include "server.h"
+#include "template.h"
 
 #include "../algorithm/labeling.h"
+#include "../axi/parameters.h"
 
 #define BUFFER_SIZE  8096
 
@@ -27,6 +29,13 @@ static struct extension extensions[] = {
 };
 struct extension ext_unknown = 	{(char *)"blob", (char *)"octet-stream"};
 
+static bool starts_with(const char *str, const char* pre)
+{
+    size_t lenpre = strlen(pre),
+           lenstr = strlen(str);
+    return lenstr < lenpre ? false : strncmp(pre, str, lenpre) == 0;
+}
+
 static uint16_t get_port(uint16_t port) {
 	if (port < 1 || port > 31000) {
 		fdebug("Illegal port value provided [%d].", port);
@@ -45,7 +54,7 @@ static void dump_vdma(int conn_id, char filename[32], struct video_config config
 }
 
 void algo_to_file(int conn_id, char filename[32], struct server_ctx ctx) {
-	fdebug("[%6d] Writing algorithm result to file [%s]. [MOCK]", conn_id, filename);
+	fdebug("[%6d] Writing algorithm result to file [%s].", conn_id, filename);
 	int width = ctx.video_transmit->config->video.width;
 	int height = ctx.video_transmit->config->video.height;
 
@@ -62,45 +71,20 @@ void algo_to_file(int conn_id, char filename[32], struct server_ctx ctx) {
 
 static void update_index_file(int conn_id, struct video_config config) {
 	fdebug("[%6d] Updating index file.", conn_id);
-	static const char format[] = ""
-			"<html>"
-			"<head>"
-			" <meta charset=\"UTF-8\">"
-			"</head>"
-			"<body>"
-			"<table class=\"tg\">"
-			"  <tr>"
-			"    <td colspan=\"2\">Współczynnik ruchu: %d (0-255)</td>"
-			"    <td colspan=\"2\">Współczynnik tła: %d (0-255)</td>"
-			"    <td colspan=\"2\">Współczynnik bezwładności: %f (0.0-1.0)</td>"
-			"  </tr>"
-			"  <tr>"
-			"    <td colspan=\"3\">"
-			"    	<div style=\"text-align:center;\">Ramka obrazu</div>"
-			"		<img src=\"vdma/frame-buffer\" width=\"600px\"/>"
-			"	</td>"
-			"    <td colspan=\"3\">"
-			"    	<div style=\"text-align:center;\">Model tła</div>"
-			"    	<img src=\"vdma/background-buffer\" width=\"600px\"/>"
-			"	</td>"
-			"  </tr>"
-			"  <tr>"
-			"    <td colspan=\"3\">"
-			"    	<div style=\"text-align:center;\">Maska obiektów pierwszoplanowych</div>"
-			"    	<img src=\"vdma/result-frame\" width=\"600px\"/>"
-			"	</td>"
-			"    <td colspan=\"3\">"
-			"    	<div style=\"text-align:center;\">Wynik działania algorytmu</div>"
-			"    	<img src=\"algorithm-result\" width=\"600px\"/>"
-			"	</td>"
-			"  </tr>"
-			"</table></body>"
-			"</html>";
 
 	FILE * f = fopen("index.html", "w");
-	fprintf(f, format, config.algo.bg_th, config.algo.fd_th, config.algo.alpha);
+	fprintf(f, html, config.algo.bg_th, config.algo.bg_th, config.algo.fd_th, config.algo.fd_th, config.algo.alpha, config.algo.alpha);
 
 	fclose(f);
+}
+
+static void update_algo_parameters(int conn_id, const char* buffer, struct video_transmit video_transmit)
+{
+	sscanf(buffer, "GET /?bg=%hhu&fd=%hhu&alpha=%lf",
+			&(video_transmit.config->algo.bg_th),
+			&(video_transmit.config->algo.fd_th),
+			&(video_transmit.config->algo.alpha));
+	update_parameters(video_transmit.parameters, *video_transmit.config);
 }
 
 static void server_serve(struct server_ctx * ctx, int conn_fd, int conn_id) {
@@ -170,6 +154,11 @@ static void server_serve(struct server_ctx * ctx, int conn_fd, int conn_id) {
 		snprintf(buffer, BUFFER_SIZE, "GET /%s", filename);
 	}
 
+	if (starts_with(buffer, "GET /?bg"))
+	{
+		update_algo_parameters(conn_id, buffer, *ctx->video_transmit);
+		strncpy(buffer, "GET /", BUFFER_SIZE);
+	}
 
 	if (is_path(buffer, "/\0")) {
 		(void) strcpy(buffer, "GET /index.html");
