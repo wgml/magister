@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER algorithm_parameters
+	OPTION supported_peripherals = (algorithm_parameters);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = algorithm_parameters;
+END DRIVER
