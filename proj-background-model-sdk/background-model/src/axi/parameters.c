@@ -29,6 +29,9 @@ void update_parameters(struct axi_interface *interface, struct video_config conf
 	axi_write(interface->virt_addr, BG_REGISTER, config.algo.bg_th);
 	axi_write(interface->virt_addr, FD_REGISTER, config.algo.fd_th);
 
+	fdebug("[%s] Parameters are now set to: bg_th = %d, fd_th = %d, alpha = %.2f.", interface->id,
+			config.algo.bg_th, config.algo.fd_th, config.algo.alpha);
+
 	fdebug("[%s] Parameters update done.", interface->id);
 }
 
