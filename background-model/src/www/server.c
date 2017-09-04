@@ -69,22 +69,23 @@ void algo_to_file(int conn_id, char filename[32], struct server_ctx ctx) {
 	dump_buffer_to_file(filename, buffer_out, width, height);
 }
 
-static void update_index_file(int conn_id, struct video_config config) {
+static void update_index_file(int conn_id, struct video_config *config) {
 	fdebug("[%6d] Updating index file.", conn_id);
 
 	FILE * f = fopen("index.html", "w");
-	fprintf(f, html, config.algo.bg_th, config.algo.bg_th, config.algo.fd_th, config.algo.fd_th, config.algo.alpha, config.algo.alpha);
+	fprintf(f, html, config->algo.bg_th, config->algo.bg_th, config->algo.fd_th,
+			config->algo.fd_th, config->algo.alpha, config->algo.alpha);
 
 	fclose(f);
 }
 
-static void update_algo_parameters(int conn_id, const char* buffer, struct video_transmit video_transmit)
+static void update_algo_parameters(int conn_id, const char* buffer, struct video_transmit *video_transmit)
 {
 	sscanf(buffer, "GET /?bg=%hhu&fd=%hhu&alpha=%lf",
-			&(video_transmit.config->algo.bg_th),
-			&(video_transmit.config->algo.fd_th),
-			&(video_transmit.config->algo.alpha));
-	update_parameters(video_transmit.parameters, *video_transmit.config);
+			&(video_transmit->config->algo.bg_th),
+			&(video_transmit->config->algo.fd_th),
+			&(video_transmit->config->algo.alpha));
+	update_parameters(video_transmit->parameters, *video_transmit->config);
 }
 
 static void server_serve(struct server_ctx * ctx, int conn_fd, int conn_id) {
@@ -156,13 +157,13 @@ static void server_serve(struct server_ctx * ctx, int conn_fd, int conn_id) {
 
 	if (starts_with(buffer, "GET /?bg"))
 	{
-		update_algo_parameters(conn_id, buffer, *ctx->video_transmit);
+		update_algo_parameters(conn_id, buffer, ctx->video_transmit);
 		strncpy(buffer, "GET /", BUFFER_SIZE);
 	}
 
 	if (is_path(buffer, "/\0")) {
 		(void) strcpy(buffer, "GET /index.html");
-		update_index_file(conn_id, *ctx->video_transmit->config);
+		update_index_file(conn_id, ctx->video_transmit->config);
 	}
 
 	fdebug("[%6d] Asked for file [%s].", conn_id, &buffer[5]);
