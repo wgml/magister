@@ -861,8 +861,8 @@
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
       <xilinx:displayName>algorithm_parameters</xilinx:displayName>
-      <xilinx:coreRevision>3</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2017-09-01T13:23:11Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>4</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2017-09-03T19:09:05Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="user.org:user:algorithm_parameters:1.0_ARCHIVE_LOCATION">/mnt/data/projects/petalinux/vivado/ip_repo/algorithm_parameters_1.0</xilinx:tag>
       </xilinx:tags>

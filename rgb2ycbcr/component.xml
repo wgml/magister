@@ -457,8 +457,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>rgb2ycbcr_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>4</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2017-09-01T13:22:44Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>5</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2017-09-03T19:03:51Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="user.org:user:rgb2ycbcr:1.0_ARCHIVE_LOCATION">/mnt/data/projects/petalinux/vivado/ip_repo/rgb2ycbcr</xilinx:tag>
       </xilinx:tags>
