@@ -25,7 +25,6 @@ module delay #
 )
 (
 	input [N - 1:0] d,
-	input ce,
 	input clk,
 	output [N - 1:0] q
 );
@@ -44,7 +43,6 @@ generate
 	reg_i
 	(
 		.clk(clk),
-		.ce(ce),
 		.d(tdata[i]),
 		.q(tdata[i + 1])
 	);

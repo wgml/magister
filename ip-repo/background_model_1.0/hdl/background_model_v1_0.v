@@ -26,20 +26,6 @@
 		
 		input wire force_ready
 	);
-    wire  background_model_tvalid;
-    wire [TDATA_WIDTH-1 : 0] background_model_tdata;
-    wire  background_model_tuser;
-    wire  background_model_tlast;
-    
-    wire  foreground_mask_tvalid;
-    wire [TDATA_WIDTH-1 : 0] foreground_mask_tdata;
-    wire  foreground_mask_tuser;
-    wire  foreground_mask_tlast;
-
-    wire  movement_mask_tvalid;
-    wire [TDATA_WIDTH-1 : 0] movement_mask_tdata;
-    wire  movement_mask_tuser;
-    wire  movement_mask_tlast;
 
     wire [TDATA_WIDTH-1 : 0] current_frame = input_frames_tdata[TDATA_WIDTH-1 : 0];
     wire [TDATA_WIDTH-1 : 0] previous_frame = input_frames_tdata[2*TDATA_WIDTH-1 : TDATA_WIDTH];
@@ -70,17 +56,16 @@
         .bg_th(bg_th),
         .fd_th(fd_th),
         .clk(aclk),
-        .obackground_frame(background_data_mux[1][TDATA_WIDTH-1:0]),
-        .oforeground_mask(foreground_data_mux[1][TDATA_WIDTH-1:0]),
-        .omovement_mask(movement_data_mux[1][TDATA_WIDTH-1:0])
+        .obackground_frame(background_data_mux[1]),
+        .oforeground_mask(foreground_data_mux[1]),
+        .omovement_mask(movement_data_mux[1])
     );
     
     delay #(
         .N(3),
-        .DELAY(4)
+        .DELAY(7)
     ) delay_signals (
         .d({input_frames_tuser, input_frames_tlast, input_frames_tvalid}),
-        .ce(1'b1),
         .clk(aclk),
         .q({tuser_mux[1], tlast_mux[1], tvalid_mux[1]})
     );

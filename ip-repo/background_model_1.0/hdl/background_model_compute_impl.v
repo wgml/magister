@@ -46,7 +46,6 @@ module background_model_compute (
         .DELAY(4)
     ) delay_background_ce (
         .d({in_background, ce}),
-        .ce(1'b1),
         .clk(clk),
         .q({in_background_d, ce_d})
     );

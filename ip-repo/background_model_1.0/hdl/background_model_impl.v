@@ -72,7 +72,6 @@ module background_model_impl #
         .DELAY(1)
     ) delay_y (
         .clk(clk),
-        .ce(ce),
         .d(difference_y),
         .q(difference_y_d1)
     );
@@ -86,19 +85,18 @@ module background_model_impl #
         .ADD(1'b1)
     );
     
-    wire [8:0] difference_cbcr_d1;
+    wire [1:0] difference_cbcr_d1;
     delay #(
-        .N(9),
+        .N(2),
         .DELAY(1)
     ) delay_cbcr (
         .clk(clk),
-        .ce(ce),
-        .d(difference_cbcr),
+        .d(difference_cbcr[8:7]),
         .q(difference_cbcr_d1)
     );
 
     // entire delay for foreground_mask computation = 3
-    wire foreground_mask = ((difference_cbcr_d1[8:7] > 2'b0) | (difference_weighted > {1'b0, bg_th})) ? 1'b1 : 1'b0;
+    wire foreground_mask = ((difference_cbcr_d1 > 2'b0) | (difference_weighted > {1'b0, bg_th})) ? 1'b1 : 1'b0;
     
     wire [7:0] movement_mask_v;
     absolute_difference movement_diff
@@ -118,7 +116,6 @@ module background_model_impl #
         .DELAY(2)
     ) delay_movement_mask (
         .clk(clk),
-        .ce(ce),
         .d(movement_mask),
         .q(movement_mask_d2)
     );    
@@ -135,7 +132,6 @@ module background_model_impl #
         .DELAY(3)
     ) delay_frames (
         .clk(clk),
-        .ce(ce),
         .d({current_frame, background_frame}),
         .q({current_frame_d3, background_frame_d3})
     );    
@@ -181,7 +177,6 @@ module background_model_impl #
         .DELAY(4)
     ) delay_masks (
         .clk(clk),
-        .ce(ce),
         .d({foreground_mask, movement_mask_d2}),
         .q({foreground_mask_d4, movement_mask_d4})
     );
